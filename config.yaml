@@ -1,0 +1,13 @@
+---
+resources:
+  ec2:
+    delete_older_than: 365
+  ebs:
+    delete_older_than: 365
+    whitelist:
+      - vol-b0b2c37f
+  snapshots:
+    delete_older_than: 365
+    whitelist:
+      - snap-xyz
+      - snap-abc
