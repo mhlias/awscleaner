@@ -42,7 +42,7 @@ func (e *EC2) PurgeInstances(c1 chan int, meta interface{}, days int16, actualde
 
             params := &ec2.TerminateInstancesInput{
               InstanceIds: []*string{
-                //aws.String(*inst.InstanceId), 
+                aws.String(*inst.InstanceId), 
               },
             }
             _, err := meta.(*AWSClient).ec2conn.TerminateInstances(params)
@@ -85,31 +85,34 @@ func (e *EC2) PurgeVolumes(c1 chan int, meta interface{}, days int16, actualdest
 
   for _, vl := range e.Volumes.Volumes {
 
-    if !is_whitelisted(whitelist, *vl.VolumeId) {
+    if *vl.State == "available" {
 
-      if(older_than(vl.CreateTime.Unix(), days)) {
+      if !is_whitelisted(whitelist, *vl.VolumeId) {
 
-        if actualdestroy {
+        if(older_than(vl.CreateTime.Unix(), days)) {
 
-          params := &ec2.DeleteVolumeInput{
-            //VolumeId: aws.String(*vl.VolumeId), // Required
-          }
-          _, err := meta.(*AWSClient).ec2conn.DeleteVolume(params)
+          if actualdestroy {
 
-          if err != nil {
-            log.Println("[ERROR] EBS Volume: ", *vl.VolumeId, "could not be deleted, error occured: ", err )
+            params := &ec2.DeleteVolumeInput{
+              VolumeId: aws.String(*vl.VolumeId), // Required
+            }
+            _, err := meta.(*AWSClient).ec2conn.DeleteVolume(params)
+
+            if err != nil {
+              log.Println("[ERROR] EBS Volume: ", *vl.VolumeId, "could not be deleted, error occured: ", err )
+            } else {
+              log.Println("[INFO] EBS Volume: ", *vl.VolumeId, " was deleted as it was older than ", days, " days.")
+            }
+
+            time.Sleep(time.Duration(sleepms) * time.Millisecond)
+
+            sleepms += 600
+
           } else {
-            log.Println("[INFO] EBS Volume: ", *vl.VolumeId, " was deleted as it was older than ", days, " days.")
+            log.Println("[WARN] EBS Volume: ", *vl.VolumeId, " would be deleted without the dryrun!!!")
           }
 
-          time.Sleep(time.Duration(sleepms) * time.Millisecond)
-
-          sleepms += 600
-
-        } else {
-          log.Println("[WARN] EBS Volume: ", *vl.VolumeId, " would be deleted without the dryrun!!!")
         }
-
       }
     }
   }
@@ -144,7 +147,7 @@ func (e *EC2) PurgeSnapshots(c1 chan int, meta interface{}, days int16, actualde
         if actualdestroy {
 
           params := &ec2.DeleteSnapshotInput{
-            //SnapshotId: aws.String(*sn.SnapshotId), // Required
+            SnapshotId: aws.String(*sn.SnapshotId), // Required
           }
           _, err := meta.(*AWSClient).ec2conn.DeleteSnapshot(params)
 
