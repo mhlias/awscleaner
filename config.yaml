@@ -1,13 +1,13 @@
 ---
 resources:
   ec2:
-    delete_older_than: 365
+    delete_older_than: 30
+    whitelist:
+      - i-xyz
   ebs:
-    delete_older_than: 365
-    whitelist:
-      - vol-b0b2c37f
+    delete_older_than: 45
   snapshots:
-    delete_older_than: 365
+    delete_older_than: 90
     whitelist:
-      - snap-xyz
       - snap-abc
+      - snap-dfg
