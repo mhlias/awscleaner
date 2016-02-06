@@ -1,6 +1,6 @@
 ## Overview
 
-A simple Go utility that provides a way to do some housekeeping on an AWS account by deleting resources older than am X number of days.
+A simple Go utility that provides a way to do some housekeeping on an AWS account by deleting resources older than X number of days.
 
 ## Setup
 
