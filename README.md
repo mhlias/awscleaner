@@ -37,7 +37,7 @@ If you run it outside an AWS instance you will need to have an AWSCLI profile fi
 
 
 By default the tool does a dry run warning you of the resources it will delete based on the set configuration.
-The -destroy-resources parameter will destroy all resources matched by the configuration rules without confirmation!!!
+The `-destroy-resources` parameter will destroy all resources matched by the configuration rules without confirmation!!!
 
 
 
@@ -70,7 +70,7 @@ awscleaner -config /path/to/aws/profile/config -profile project-dev
 
 ```
 
-The above can be performed using an IAM instance role by using the parameter -userole and with the following access profile in IAM:
+The above can be performed using an IAM instance role by using the parameter `-userole` and with the following access profile in IAM:
 
 ```
 "Action": [
